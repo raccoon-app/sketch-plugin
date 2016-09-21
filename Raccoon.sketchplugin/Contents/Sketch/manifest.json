@@ -1,0 +1,25 @@
+{
+    "author": "EPAM",
+    "commands" : [
+        {
+            "name": "Spec Export",
+            "identifier": "commandExport",
+            "shortcut": "ctrl shift e",
+            "handler" : "commandExport",
+            "script": "mark.sketchscript"
+        }
+    ],
+    "menu" : {
+        "isRoot" : false,
+        "shortcut" : "",
+        "items" : [
+            "commandExport"
+        ],
+        "title" : "Raccoon"
+    },
+    "identifier": "com.raccoon.sketch",
+    "version": "2.2",
+    "description" : "Make it a fun to create spec for developers and teammates",
+    "authorEmail" : "",
+    "name" : "Raccoon"
+}

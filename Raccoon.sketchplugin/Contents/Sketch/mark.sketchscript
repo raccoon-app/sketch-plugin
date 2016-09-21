@@ -1,0 +1,6 @@
+@import "../Panel/common.js"
+@import "../Panel/MochaJSDelegate.js"
+
+function commandExport(context) {
+    SM.init(context, "export");
+}
