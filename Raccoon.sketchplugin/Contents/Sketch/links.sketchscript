@@ -1,0 +1,16 @@
+function openURL(url){
+  var nsurl = NSURL.URLWithString(url + '?ref=smp');
+  NSWorkspace.sharedWorkspace().openURL(nsurl)
+}
+
+function linkDonate(){
+  openURL('https://github.com/raccoon-app');
+}
+
+function linkHelp(){
+  openURL('https://github.com/raccoon-app/sketch-plugin/issues');
+}
+
+function linkFeedback(){
+  openURL('https://github.com/raccoon-app/sketch-plugin/issues');
+}

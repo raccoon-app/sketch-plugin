@@ -1,6 +1,14 @@
 @import "../Panel/common.js"
 @import "../Panel/MochaJSDelegate.js"
 
+function commandSettings(context) {
+    App.init(context, "settings");
+}
+
 function commandExport(context) {
-    SM.init(context, "export");
+    App.init(context, "export");
+}
+
+function commandInit(context){
+    App.init(context, "init");
 }
