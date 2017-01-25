@@ -19,13 +19,13 @@
         $('#donate').text(options.donate);
         $('#submit').text(options.download);
         $('#submit').click(function(){
-          SMAction('submit', {});
+          AppAction('submit', {});
         });
         $('#cancel').click(function(){
-          SMAction('close');
+          AppAction('close');
         });
         $('#donate').click(function(){
-          SMAction('donate');
+          AppAction('donate');
         });
         $('.update').show();
       }

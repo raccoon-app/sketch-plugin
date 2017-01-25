@@ -44,8 +44,7 @@ var App = {
             coscript.setShouldKeepAround(true);
 
             if(command && command == "init"){
-                this.manifest();
-                this.checkUpdate();
+                //this.checkUpdate();
                 return false;
             }
 
@@ -134,29 +133,6 @@ App.extend({
         webView.setMainFrameURL_("http://utom.design/measure/package.json?" + timestamp);
     }
 });
-
-App.extend({
-    manifest: function(){
-      var self = this,
-          manifestURL = self.pluginSketch + "/i18n/manifest-" + lang + ".json";
-
-      if( ( !self.AppVersion || self.AppVersion != this.version ) || ( !self.AppLanguage || self.AppLanguage != self.language ) ){
-        self.prefs.setObject_forKey (self.version, "AppVersion");
-        self.prefs.setObject_forKey (self.language, "AppLanguage");
-        if(NSFileManager.defaultManager().fileExistsAtPath(manifestURL)){
-            manifest = NSString.stringWithContentsOfFile_encoding_error(manifestURL, 4, nil);
-            self.writeFile({
-                content: manifest,
-                path: self.pluginRoot + "/Contents/Sketch/",
-                fileName: "manifest.json"
-            });
-            AppController.sharedInstance().pluginManager().reloadPlugins();
-        }
-
-      }
-
-    }
-})
 
 App.extend({
     prefix: "AppConfigs2",
@@ -551,6 +527,8 @@ App.extend({
         }
     }
 });
+// end help.js
+
 
 // configs.js
 App.extend({
@@ -591,93 +569,8 @@ App.extend({
 
     }
 });
+// end configs.js
 
-//shared.js
-App.extend({
-    sharedLayerStyle: function(name, color, borderColor) {
-        var sharedStyles = this.documentData.layerStyles(),
-            style = this.find({key: "(name != NULL) && (name == %@)", match: name}, sharedStyles);
-
-        style = ( !style || this.is(style, MSSharedStyle))? style: style[0];
-
-        if( style == false ){
-            style = MSStyle.alloc().init();
-
-            var color = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a),
-                fill = style.addStylePartOfType(0);
-
-            fill.color = color;
-
-            if(borderColor){
-                var border = style.addStylePartOfType(1),
-                    borderColor = MSColor.colorWithRed_green_blue_alpha(borderColor.r, borderColor.g, borderColor.b, borderColor.a);
-
-                border.color = borderColor;
-                border.thickness = 1;
-                border.position = 1;
-            }
-
-            sharedStyles.addSharedStyleWithName_firstInstance(name, style);
-        }
-
-        return (style.newInstance)? style.newInstance(): style;
-    },
-    sharedTextStyle: function(name, color, alignment){
-        var sharedStyles = this.document.documentData().layerTextStyles(),
-            style = this.find({key: "(name != NULL) && (name == %@)", match: name}, sharedStyles);
-
-        style = (!style || this.is(style, MSSharedStyle))? style: style[0];
-
-        if( style == false ){
-            var color = MSColor.colorWithRed_green_blue_alpha(color.r, color.g, color.b, color.a),
-                alignment = alignment || 0, //[left, right, center, justify]
-                text = this.addText(this.page);
-
-            text.setTextColor(color);
-
-            text.setFontSize(12);
-            text.setFontPostscriptName("HelveticaNeue");
-            text.setTextAlignment(alignment);
-
-            style = text.style();
-            sharedStyles.addSharedStyleWithName_firstInstance(name, style);
-            this.removeLayer(text);
-        }
-
-        return (style.newInstance)? style.newInstance(): style;
-    }
-});
-
-
-
-App.extend({
-    getImage: function(size, name){
-        var isRetinaDisplay = (NSScreen.mainScreen().backingScaleFactor() > 1)? true: false;
-            suffix = (isRetinaDisplay)? "@2x": "",
-            imageURL = NSURL.fileURLWithPath(this.pluginSketch + "/toolbar/" + name + suffix + ".png"),
-            image = NSImage.alloc().initWithContentsOfURL(imageURL);
-
-        return image
-    },
-    addImage: function(rect, name){
-        var view = NSImageView.alloc().initWithFrame(rect),
-            image = this.getImage(rect.size, name);
-        view.setImage(image);
-        return view;
-    },
-    addButton: function(rect, name, callAction){
-        var button = NSButton.alloc().initWithFrame(rect),
-            image = this.getImage(rect.size, name);
-
-        button.setImage(image);
-        button.setBordered(false);
-        button.sizeToFit();
-        button.setButtonType(NSMomentaryChangeButton)
-        button.setCOSJSTargetFunction(callAction);
-        button.setAction("callAction:");
-        return button;
-    }
-})
 
 // Panel.js
 App.extend({
@@ -739,59 +632,69 @@ App.extend({
                                     ");"
                                 ].join("");
 
-                        windowObject.evaluateWebScript(AppAction);
-                        windowObject.evaluateWebScript(language);
-                        windowObject.evaluateWebScript(DOMReady);
-                    }),
+                    windowObject.evaluateWebScript(AppAction);
+                    windowObject.evaluateWebScript(language);
+                    windowObject.evaluateWebScript(DOMReady);
+                }),
                 "webView:didChangeLocationWithinPageForFrame:": (function(webView, webFrame){
-                        var request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
+                    var request = NSURL.URLWithString(webView.mainFrameURL()).fragment();
 
-                        if(request == "submit"){
-                            var data = JSON.parse(decodeURI(windowObject.valueForKey("AppData")));
-                            options.callback(data);
-                            result = true;
-                            if(!options.floatWindow){
-                                windowObject.evaluateWebScript("window.location.hash = 'close';");
-                            }
+                    if(request == "submit"){
+                        var data = JSON.parse(decodeURI(windowObject.valueForKey("AppData")));
+                        options.callback(data);
+                        result = true;
+                        if(!options.floatWindow){
+                            windowObject.evaluateWebScript("window.location.hash = 'close';");
                         }
-                        else if(request == "close"){
-                            if(!options.floatWindow){
-                                Panel.orderOut(nil);
-                                NSApp.stopModal();
-                            }
-                            else{
-                                Panel.close();
-                            }
+                    }
+                    else if(request == "fetch"){
+                        //self.message(_(JSON.stringify(data)));
+
+                        var dataFetch = JSON.parse(decodeURI(windowObject.valueForKey("AppData")));
+                        options.callback(dataFetch);
+                        if(!options.floatWindow){
+                            windowObject.evaluateWebScript("window.location.hash = 'close';");
                         }
-                        else if(request == "donate"){
-                            NSWorkspace.sharedWorkspace().openURL(NSURL.URLWithString("http://utom.design/measure/donate.html?ref=update"));
-                            // windowObject.evaluateWebScript("window.location.hash = 'close';");
+
+                        self.message(_("Fetch complete!"));
+
+                        self.consolePanel(dataFetch);
+
+                    }
+                    else if(request == "close"){
+                        if(!options.floatWindow){
+                            Panel.orderOut(nil);
+                            NSApp.stopModal();
                         }
-                        else if(request == "import"){
-                            if( options.importCallback(windowObject) ){
-                                 self.message(_("Import complete!"));
-                            }
+                        else{
+                            Panel.close();
                         }
-                        else if(request == "export"){
-                            if( options.exportCallback(windowObject) ){
-                                 self.message(_("Export complete!"));
-                            }
+                    }
+                    else if(request == "import"){
+                        if( options.importCallback(windowObject) ){
+                            self.message(_("Import complete!"));
                         }
-                        else if(request == "export-xml"){
-                            if( options.exportXMLCallback(windowObject) ){
-                                 self.message(_("Export complete!"));
-                            }
+                    }
+                    else if(request == "export"){
+                        if( options.exportCallback(windowObject) ){
+                            self.message(_("Export complete!"));
                         }
-                        else if(request == "add"){
-                            options.addCallback(windowObject);
+                    }
+                    else if(request == "export-xml"){
+                        if( options.exportXMLCallback(windowObject) ){
+                            self.message(_("Export complete!"));
                         }
-                        else if(request == "focus"){
-                            var point = Panel.currentEvent().locationInWindow(),
-                                y = NSHeight(Panel.frame()) - point.y - 32;
-                            windowObject.evaluateWebScript("lookupItemInput(" + point.x + ", " + y + ")");
-                        }
-                        windowObject.evaluateWebScript("window.location.hash = '';");
-                    })
+                    }
+                    else if(request == "add"){
+                        options.addCallback(windowObject);
+                    }
+                    else if(request == "focus"){
+                        var point = Panel.currentEvent().locationInWindow(),
+                            y = NSHeight(Panel.frame()) - point.y - 32;
+                        windowObject.evaluateWebScript("lookupItemInput(" + point.x + ", " + y + ")");
+                    }
+                    windowObject.evaluateWebScript("window.location.hash = '';");
+                })
             });
 
         contentView.setWantsLayer(true);
@@ -873,71 +776,30 @@ App.extend({
             height: 316,
             data: data,
             callback: function( data ){
-                self.configs = self.setConfigs(data);
+
+                //self.configs = self.setConfigs(data);
             }
         });
 
     },
-    sizesPanel: function(){
-        var self = this,
-            data = {};
+    consolePanel: function(data){
+        var self = this;
 
-        if(this.configs.sizes && this.configs.sizes.widthPlacement) data.widthPlacement = this.configs.sizes.widthPlacement;
-        if(this.configs.sizes && this.configs.sizes.heightPlacement) data.heightPlacement = this.configs.sizes.heightPlacement;
-        if(this.configs.sizes && this.configs.sizes.byPercentage) data.byPercentage = this.configs.sizes.byPercentage;
+            data = data || {};
 
         return this.AppPanel({
-            url: this.pluginSketch + "/panel/sizes.html",
             width: 240,
-            height: 358,
+            height: 420,
             data: data,
+            url: this.pluginSketch + "/panel/console.html",
             callback: function( data ){
-                self.configs = self.setConfigs({
-                    sizes: data
-                });
+                //self.configs = self.setConfigs(data);
             }
         });
-    },
-    spacingsPanel: function(){
-        var self = this,
-            data = {};
 
-            data.placements = (this.configs.spacings && this.configs.spacings.placements)? this.configs.spacings.placements: ["top", "left"];
-            if(this.configs.spacings && this.configs.spacings.byPercentage) data.byPercentage = this.configs.spacings.byPercentage;
-
-        return this.AppPanel({
-            url: this.pluginSketch + "/panel/spacings.html",
-            width: 240,
-            height: 314,
-            data: data,
-            callback: function( data ){
-                self.configs = self.setConfigs({
-                    spacings: data
-                });
-            }
-        });
-    },
-    propertiesPanel: function(){
-        var self = this,
-            data = (this.configs.properties)? this.configs.properties: {
-                        placement: "top",
-                        properties: ["color", "border"]
-                    };
-        return this.AppPanel({
-            url: this.pluginSketch + "/panel/properties.html",
-            width: 280,
-            height: 356,
-            data: data,
-            callback: function( data ){
-                self.configs = self.setConfigs({
-                    properties: data
-                });
-            }
-        });
     }
 });
-
-
+// end Panel.js
 
 
 // exportable.js
@@ -1000,6 +862,8 @@ App.extend({
 
     }
 });
+// end exportable.js
+
 
 // export.js
 App.extend({
@@ -1781,3 +1645,4 @@ App.extend({
         return content;
     }
 });
+// end export.js

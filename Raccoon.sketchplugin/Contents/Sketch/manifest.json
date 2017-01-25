@@ -22,12 +22,6 @@
             "script": "links.sketchscript"
         },
         {
-            "name": "Donate",
-            "identifier": "linkDonate",
-            "handler": "linkDonate",
-            "script": "links.sketchscript"
-        },
-        {
             "name": "Init",
             "identifier": "commandInit",
             "handlers": {
@@ -43,20 +37,18 @@
         "shortcut" : "",
         "items" : [
             "commandExport",
-            "-",
             "commandSettings",
-            "linkDonate",
+            "-",
             {
               "title": "Help",
               "items": [
-                "linkHelp",
                 "linkFeedback"
               ]
             }
         ],
-        "title" : "Raccoon "
+        "title" : "Raccoon"
     },
-    "identifier": "com.raccoon.sketch",
+    "identifier": "com.raccoon.measurere",
     "homepage": "https://github.com/raccoon-app",
     "version": "0.0.1",
     "description" : "Make it a fun to create spec for developers and teammates",

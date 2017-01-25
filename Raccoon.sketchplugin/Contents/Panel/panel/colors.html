@@ -112,19 +112,19 @@
         }, 'input');
 
         $('.file-import,.c-import').click(function(){
-            SMAction('import');
+            AppAction('import');
             $('.button-settings').blur();
         });
         $('.c-export').click(function(){
-            SMAction('export');
+            AppAction('export');
             $('.button-settings').blur();
         });
         $('.c-export-xml').click(function(){
-            SMAction('export-xml');
+            AppAction('export-xml');
             $('.button-settings').blur();
         });
         $('.button-add').click(function(){
-            SMAction('add');
+            AppAction('add');
         });
 
         $('body').click(function(){
@@ -143,7 +143,7 @@
                 color: color
             });
         });
-        SMAction('submit', colorNames);
+        AppAction('submit', colorNames);
     },
     addColors = function(data, option){
         var colorsHTML = [],

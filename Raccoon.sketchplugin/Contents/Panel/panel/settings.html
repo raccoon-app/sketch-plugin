@@ -41,16 +41,22 @@
             $('#' + DRID).click();
         },
         submit = function(){
-            SMAction('submit', {
-                scale: $('input[name=scale]').val(),
-                unit: $('input[name=unit]').val(),
-                colorFormat: $('input[name=format]:checked').val()
+
+            $.getJSON('https://randomuser.me/api/?results=10').done(function( data ) {
+                $('body').text(JSON.stringify(data));
+
+                AppAction('fetch', data);
             });
-            console.log(window.location.hash)
+
+
+//            AppAction('submit', {
+//                scale: $('input[name=scale]').val(),
+//                unit: $('input[name=unit]').val(),
+//                colorFormat: $('input[name=format]:checked').val()
+//            });
         },
         init = function(data){
             $('body').html([
-                '<div class="container">',
                     '<div class="options" style="height:194px">',
                         '<div class="resolution selectbox mrb16" tabindex="0">',
                             '<div class="selectwrap">',
