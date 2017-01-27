@@ -7,8 +7,8 @@ function linkDonate(){
   openURL('https://github.com/raccoon-app');
 }
 
-function linkHelp(){
-  openURL('https://github.com/raccoon-app/sketch-plugin/issues');
+function linkDocumentation(){
+  openURL('https://github.com/raccoon-app/sketch-plugin/');
 }
 
 function linkFeedback(){

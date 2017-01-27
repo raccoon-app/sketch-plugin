@@ -1,0 +1,55 @@
+::-webkit-scrollbar{
+    width: 8px;
+    height: 8px;
+    background: red;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb{
+    border: 1px solid rgba(255,255,255,.16);
+    background-color: blue;
+    border-radius: 4px;
+}
+
+body {
+    background: #2f2f2f;
+    padding: 0;
+    color: #fff;
+    overflow: hidden;
+    height: 100%;
+}
+
+.header {
+    position: relative;
+    background: #2f2f2f;
+    padding: 0 15px 15px;
+    height: 45px;
+    overflow: hidden;
+}
+
+.logo {
+    width: 64px;
+    height: 22px;
+    background: url(../img/logo.png) 0 0 no-repeat;
+    background-size: 64px 22px;
+    float: left;
+}
+
+.user {
+    padding: 2px 20px;
+    float: left;
+    font-size: 14px;
+}
+
+
+.container {
+    position: relative;
+    padding: 10px;
+    background: #262626;
+    overflow: auto;
+    height: calc(100vh - 60px);
+}
+
+
+button {
+    outline: 0;
+}

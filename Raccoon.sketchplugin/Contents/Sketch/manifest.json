@@ -2,17 +2,10 @@
     "author": "EPAM Systems",
     "commands" : [
         {
-            "name": "Spec Export",
+            "name": "Export to Raccoon",
             "identifier": "commandExport",
             "shortcut": "ctrl shift e",
             "handler" : "commandExport",
-            "script": "mark.sketchscript"
-        },
-        {
-            "name": "Settings",
-            "identifier": "commandSettings",
-            "shortcut": "",
-            "handler": "commandSettings",
             "script": "mark.sketchscript"
         },
         {
@@ -22,35 +15,32 @@
             "script": "links.sketchscript"
         },
         {
-            "name": "Init",
-            "identifier": "commandInit",
-            "handlers": {
-                "actions": {
-                    "OpenDocument": "commandInit",
-                }
-            },
-            "script": "mark.sketchscript"
+          "name": "Documentation",
+          "identifier": "linkDocumentation",
+          "handler": "linkDocumentation",
+          "script": "links.sketchscript"
         }
+
     ],
     "menu" : {
         "isRoot" : false,
         "shortcut" : "",
         "items" : [
             "commandExport",
-            "commandSettings",
             "-",
             {
-              "title": "Help",
-              "items": [
-                "linkFeedback"
-              ]
+                "title": "Help",
+                "items": [
+                    "linkDocumentation",
+                    "linkFeedback"
+                ]
             }
         ],
         "title" : "Raccoon"
     },
-    "identifier": "com.raccoon.measurere",
+    "identifier": "com.raccoon.measurerrrrrrrr",
     "homepage": "https://github.com/raccoon-app",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description" : "Make it a fun to create spec for developers and teammates",
     "authorEmail" : "andrii_mokhovyk@epam.com",
     "name" : "Raccoon App"

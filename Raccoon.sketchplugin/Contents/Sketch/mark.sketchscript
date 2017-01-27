@@ -1,14 +1,19 @@
-@import "../Panel/common.js"
+@import "../Panel/polyfill.js"
+@import "../Panel/app.js"
+@import "../Panel/panel.js"
 @import "../Panel/MochaJSDelegate.js"
 
+var app = new App();
+
+
 function commandSettings(context) {
-    App.init(context, "settings");
+    app.command(context, "settings");
 }
 
 function commandExport(context) {
-    App.init(context, "export");
+    app.command(context, "export");
 }
 
 function commandInit(context){
-    App.init(context, "init");
+    context.document.showMessage("call init!");
 }
