@@ -15,6 +15,7 @@ var Panel = function(pluginContext, configs) {
     configs = configs || {};
 
     this.configs = Object.assign({}, defaultConfigs, configs);
+
     this.pluginContext = pluginContext;
     this.$window = {};
     this.panel = {};
@@ -85,9 +86,9 @@ Object.assign(Panel.prototype, {
 
     onFinishLoadForFrame: function(webView, webFrame){
         var PanelAction = [
-                "function trigger(hash, data){",
+                "function panelTrigger(hash, data){",
                     "if(data){",
-                        "window.PanelData = encodeURI(JSON.stringify(data));",
+                        "window.panelData = encodeURI(JSON.stringify(data));",
                     "}",
                     "window.location.hash = hash;",
                 "}"
@@ -96,7 +97,7 @@ Object.assign(Panel.prototype, {
         var DOMReady = [
                 "$(",
                     "function(){",
-                        "init(" + JSON.stringify(this.configs.data) + ")",
+                        "initView(" + JSON.stringify(this.configs.data) + ")",
                     "}",
                 ");"
             ].join("");
@@ -111,7 +112,7 @@ Object.assign(Panel.prototype, {
 
         switch (request) {
             case 'submit':
-                data = JSON.parse(decodeURI(this.$window.valueForKey("AppData")));
+                data = JSON.parse(decodeURI(this.$window.valueForKey("panelData")));
                 this.configs.callback(data);
 
                 this.$window.evaluateWebScript("window.location.hash = 'close';");
@@ -119,7 +120,7 @@ Object.assign(Panel.prototype, {
                 break;
 
             case 'fetch':
-                data = JSON.parse(decodeURI(this.$window.valueForKey("AppData")));
+                data = JSON.parse(decodeURI(this.$window.valueForKey("panelData")));
                 this.configs.callback(data);
 
                 this.$window.evaluateWebScript("window.location.hash = 'close';");

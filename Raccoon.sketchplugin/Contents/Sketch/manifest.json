@@ -40,7 +40,7 @@
     },
     "identifier": "com.raccoon.measurerrrrrrrr",
     "homepage": "https://github.com/raccoon-app",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "description" : "Make it a fun to create spec for developers and teammates",
     "authorEmail" : "andrii_mokhovyk@epam.com",
     "name" : "Raccoon App"
