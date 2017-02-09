@@ -50,17 +50,129 @@ Object.assign(App.prototype, {
 
         switch (command) {
             case "export":
-                this.openPanel({data: this.metadata});
+                this.export();
                 break;
         }
     },
 
-    openPanel: function() {
-        return new Panel(this);
+    export: function() {
+        var sketchContext = this.sketchContext;
+        var selectionArtboards = {};
+        var data = [];
+
+        if (sketchContext.selection.count() > 0) {
+            selectionArtboards = this.find({key: "(class != NULL) && (class == %@)", match: MSArtboardGroup}, sketchContext.selection, true);
+
+            if (selectionArtboards.count() > 0) {
+                selectionArtboards = selectionArtboards.objectEnumerator();
+
+                while(artboard = selectionArtboards.nextObject()) {
+                    var artboardData = {};
+                    var artboardRect = this.getRect(artboard);
+                    var page = artboard.parentGroup();
+
+                    artboardData.name = this.toJSString(artboard.name());
+                    artboardData.objectID = this.toJSString(artboard.objectID());
+                    artboardData.pageName = this.toHTMLEncode(page.name());
+                    artboardData.pageObjectID = this.toJSString(page.objectID());
+                    artboardData.width = artboardRect.width;
+                    artboardData.height = artboardRect.height;
+                    artboardData.slug = this.toSlug(page.name() + ' ' + artboard.name());
+                    artboardData.layers = [];
+
+                    // var layerCount = artboard.children().count();
+
+                    data.push(artboardData);
+                }
+
+                this.message('You select ' + selectionArtboards.count() + ' Artboards');
+
+                this.openPanel(data);
+            } else {
+                this.message('Please, Select Atrboards');
+            }
+        } else {
+            this.message('Please, Select Atrboards');
+        }
+    },
+
+    openPanel: function(data) {
+        data = data || {};
+
+        return new Panel(this, {data: data});
     },
 
     message: function(message) {
         this.document.showMessage(message);
+    },
+
+    // @TODO: Refactor it
+    find: function(format, container, returnArray){
+        if(!format || !format.key  || !format.match){
+            return false;
+        }
+
+        var predicate = NSPredicate.predicateWithFormat(format.key,format.match);
+        var items;
+        container = container || this.current;
+
+        if (container.pages) {
+            items = container.pages();
+        } else if (this.is(container, MSSharedStyleContainer) || this.is(container, MSSharedTextStyleContainer)) {
+            items = container.objectsSortedByName();
+        } else if (container.children) {
+            items = container.children();
+        } else {
+            items = container;
+        }
+
+        var queryResult = items.filteredArrayUsingPredicate(predicate);
+
+        this.message('queryResultrrr ' + queryResult.count());
+
+        if(returnArray) return queryResult;
+
+        if (queryResult.count() == 1){
+            return queryResult[0];
+        } else if (queryResult.count() > 0){
+            return queryResult;
+        } else {
+            return false;
+        }
+    },
+
+    // @TODO: Refactor it
+    is: function(layer, theClass) {
+        if(!layer) return false;
+        var klass = layer.class();
+        return klass === theClass;
+    },
+
+    toJSString: function(str){
+        return new String(str).toString();
+    },
+
+    toHTMLEncode: function(str){
+        return this.toJSString(str)
+            .replace(/\</g, "&lt;")
+            .replace(/\>/g, '&gt;')
+            .replace(/\'/g, "&#39;")
+            .replace(/\"/g, "&quot;")
+            .replace(/\u2028/g,"\\u2028")
+            .replace(/\u2029/g,"\\u2029")
+            .replace(/\ud83c|\ud83d/g,"")
+            ;
+        // return str.replace(/\&/g, "&amp;").replace(/\"/g, "&quot;").replace(/\'/g, "&#39;").replace(/\</g, "&lt;").replace(/\>/g, '&gt;');
+    },
+
+    toSlug: function(str){
+        return this.toJSString(str)
+            .toLowerCase()
+            .replace(/(<([^>]+)>)/ig, "")
+            .replace(/[\/\+\|]/g, " ")
+            .replace(new RegExp("[\\!@#$%^&\\*\\(\\)\\?=\\{\\}\\[\\]\\\\\\\,\\.\\:\\;\\']", "gi"),'')
+            .replace(/\s+/g,'-')
+            ;
     }
 });
 
@@ -98,11 +210,25 @@ Object.assign(App.prototype, {
 // end Metadata
 
 
-// Export
+// New Export
 Object.assign(App.prototype, {
+    getExportData: function() {
+    },
+    getRect: function(layer){
+        var rect = layer.absoluteRect();
+        return {
+            x: Math.round(rect.x()),
+            y: Math.round(rect.y()),
+            width: Math.round(rect.width()),
+            height: Math.round(rect.height()),
+            maxX: Math.round(rect.x() + rect.width()),
+            maxY: Math.round(rect.y() + rect.height())
+        };
+    }
+});
 
-
-
+// Old Export
+Object.assign(App.prototype, {
     hasExportSizes: function(layer){
         return layer.exportOptions().exportFormats().count() > 0;
     },
@@ -574,7 +700,7 @@ Object.assign(App.prototype, {
             }
         });
     },
-    export: function(){
+    exportOld: function(){
         if(this.exportPanel()){
             if(this.selectionArtboards.length <= 0){
                 return false;

@@ -38,7 +38,7 @@
         ],
         "title" : "Raccoon"
     },
-    "identifier": "com.raccoon.measurerrrrrrrr",
+    "identifier": "com.raccoon.measure",
     "homepage": "https://github.com/raccoon-app",
     "version": "0.0.1",
     "description" : "Make it a fun to create spec for developers and teammates",
