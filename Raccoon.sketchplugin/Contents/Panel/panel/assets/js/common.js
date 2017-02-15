@@ -97,11 +97,17 @@ $.extend(View.prototype, {
 
         this.$container.html([
             '<form class="form form-auth" action="#">',
+            '<div class="form-group">',
             '<label class="label">email</label>',
             '<input type="email" class="form-control" name="user_email">',
+            '</div>',
+            '<div class="form-group">',
             '<label class="label">password</label>',
             '<input type="password" class="form-control" name="user_password">',
+            '</div>',
+            '<div class="form-group">',
             '<button type="submit">auth</button>',
+            '</div>',
             '</form>'
         ].join(''));
     },
